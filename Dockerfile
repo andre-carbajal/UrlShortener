@@ -1,7 +1,14 @@
-FROM eclipse-temurin:21-jre
+FROM maven:3.9.7-eclipse-temurin-21
 
-COPY target/*.jar app.jar
+WORKDIR /app
+
+COPY pom.xml /app/pom.xml
+COPY src /app/src
+
+RUN mvn clean package -DskipTests
+
+RUN cp target/*.jar /app/app.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java","-jar","/app.jar"]
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
