@@ -1,2 +1,16 @@
-package net.andrecarbajal.urlshortener.controller;public class Url {
+package net.andrecarbajal.urlshortener.controller;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/url")
+public class Url {
+
+    @GetMapping
+    public ResponseEntity<String> ping() {
+        return ResponseEntity.ok("pong");
+    }
 }
