@@ -50,7 +50,7 @@ public class UrlService {
     }
 
     public List<Url> getAllUrls() {
-        return urlRepository.findAll();
+        return urlRepository.findAll().reversed();
     }
 
     private boolean isValidUrl(String url) {
