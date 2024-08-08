@@ -7,10 +7,7 @@ import net.andrecarbajal.urlshortener.domain.url.Url;
 import net.andrecarbajal.urlshortener.domain.url.UrlService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -21,7 +18,7 @@ public class UrlController {
 
     private final UrlService urlService;
 
-    @GetMapping("/shorten")
+    @GetMapping("/")
     public String getAllUrls(Model model) {
         List<Url> urls = urlService.getAllUrls();
         model.addAttribute("urls", urls);
@@ -29,13 +26,12 @@ public class UrlController {
         return "index";
     }
 
-    @PostMapping("/shorten")
+    @PostMapping("/")
     @Transactional
     public String shortenUrl(@RequestParam("originalUrl") String originalUrl, Model model) {
         String shortUrl = urlService.shortenUrl(originalUrl);
         List<Url> urls = urlService.getAllUrls();
         model.addAttribute("shortUrl", shortUrl);
-        model.addAttribute("originalUrl", originalUrl);
         model.addAttribute("urls", urls);
         model.addAttribute("baseUrl", urlService.getBaseUrl());
         return "index";
