@@ -45,7 +45,7 @@ public class UrlController {
     public void getOriginalUrl(@PathVariable String urlCode, HttpServletResponse response) throws IOException {
         String originalUrl = urlService.getOriginalUrl(urlCode);
         if (originalUrl != null) {
-            response.sendRedirect(originalUrl);
+            response.sendRedirect(urlService.getBaseUrl() + "/" + originalUrl);
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
