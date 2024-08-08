@@ -7,7 +7,10 @@ import net.andrecarbajal.urlshortener.domain.url.Url;
 import net.andrecarbajal.urlshortener.domain.url.UrlService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 import java.util.List;
@@ -28,12 +31,14 @@ public class UrlController {
 
     @PostMapping("/")
     @Transactional
-    public String shortenUrl(@RequestParam("originalUrl") String originalUrl, Model model) {
-        String shortUrl = urlService.shortenUrl(originalUrl);
+    public String shortenUrl(@RequestParam("originalUrl") String originalUrl, @RequestParam("urlCode") String urlCode, @RequestParam("authInput") String authInput, Model model) {
+        String shortUrl = urlService.shortenUrl(originalUrl, urlCode);
+
         List<Url> urls = urlService.getAllUrls();
         model.addAttribute("shortUrl", shortUrl);
         model.addAttribute("urls", urls);
         model.addAttribute("baseUrl", urlService.getBaseUrl());
+
         return "index";
     }
 
@@ -41,7 +46,7 @@ public class UrlController {
     public void getOriginalUrl(@PathVariable String urlCode, HttpServletResponse response) throws IOException {
         String originalUrl = urlService.getOriginalUrl(urlCode);
         if (originalUrl != null) {
-            response.sendRedirect(urlService.getBaseUrl() + "/" + originalUrl);
+            response.sendRedirect(originalUrl);
         } else {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
         }

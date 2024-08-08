@@ -11,10 +11,14 @@
 <body class="flex items-center justify-center min-h-screen bg-gray-100">
 <div class="text-center">
     <h1 class="text-3xl font-bold mb-4">URL Shortener</h1>
-    <form action="/shorten" method="post" class="mb-4">
-        <label for="originalUrl" class="block mb-2">Enter URL to shorten:</label>
-        <input type="text" id="originalUrl" name="originalUrl" required class="border p-2 mb-4 w-full">
-        <button type="submit" class="bg-purple-700 hover:bg-purple-600 text-white p-2 rounded">Shorten</button>
+    <form action="/" method="post" class="mb-4">
+        <label class="block mb-2">Create a short url:</label>
+        <input placeholder='Shorten your link' type="text" id="originalUrl" name="originalUrl" required class="border p-2 mb-4 w-full">
+        <div class="flex mb-4">
+            <input placeholder="Code" type="text" id="urlCode" name="urlCode" class="border p-2 w-1/2 mr-2">
+            <input placeholder='Auth' type="text" id="authInput" name="authInput" class="border p-2 w-1/2">
+        </div>
+        <button type="submit" class="bg-purple-700 hover:bg-purple-600 text-white p-2 rounded w-full">Shorten</button>
     </form>
     <div>
         <table class="table-auto w-full">
