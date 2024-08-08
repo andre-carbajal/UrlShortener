@@ -13,7 +13,8 @@
     <h1 class="text-3xl font-bold mb-4">URL Shortener</h1>
     <form action="/" method="post" class="mb-4">
         <label class="block mb-2">Create a short url:</label>
-        <input placeholder='Shorten your link' type="text" id="originalUrl" name="originalUrl" required class="border p-2 mb-4 w-full">
+        <input placeholder='Shorten your link' type="text" id="originalUrl" name="originalUrl" required
+               class="border p-2 mb-4 w-full">
         <div class="flex mb-4">
             <input placeholder="Code" type="text" id="urlCode" name="urlCode" class="border p-2 w-1/2 mr-2">
             <input placeholder='Auth' type="text" id="authInput" name="authInput" class="border p-2 w-1/2">
@@ -21,33 +22,18 @@
         <button type="submit" class="bg-purple-700 hover:bg-purple-600 text-white p-2 rounded w-full">Shorten</button>
     </form>
     <div>
-        <table class="table-auto w-full">
-            <thead>
-            <tr>
-                <th class="px-4 py-2">URLs</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="url : ${urls}">
-                <td class="border px-4 py-2 cursor-pointer" th:text="${baseUrl} + '/' + ${url.urlCode}"
-                    onclick="copyToClipboard(this)"></td>
-            </tr>
-            </tbody>
-        </table>
+        <h2 class="text-2xl font-semibold mb-4">URLs</h2>
+        <ul>
+            <li th:each="url : ${urls}" class="px-4 py-2 cursor-pointer"
+                th:text="${baseUrl} + '/' + ${url.urlCode}"
+                onclick="redirectToUrl(this)"></li>
+        </ul>
     </div>
 </div>
 <script>
-    function copyToClipboard(element) {
-        const tempInput = document.createElement('input');
-        tempInput.value = element.textContent;
-
-        navigator.clipboard.writeText(tempInput.value)
-            .then(() => {
-                alert('URL copied to clipboard');
-            })
-            .catch(err => {
-                console.error('Failed to copy URL to clipboard', err);
-            });
+    function redirectToUrl(element) {
+        const url = element.textContent;
+        window.open(url, '_blank');
     }
 </script>
 </body>
