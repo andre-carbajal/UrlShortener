@@ -24,7 +24,14 @@ public class UrlService {
     @Value("${app.base-url}")
     private String baseUrl;
 
-    public String shortenUrl(String originalUrl, String code) {
+    @Value("${app.auth}")
+    private String auth;
+
+    public String shortenUrl(String originalUrl, String codeInput, String authInput) {
+        if (!auth.equals(authInput)) {
+            throw new ValidationException("Invalid auth code");
+        }
+
         if (!isValidUrl(originalUrl)) {
             throw new ValidationException("Invalid URL format");
         }
@@ -34,17 +41,14 @@ public class UrlService {
             return baseUrl + existingUrls.getFirst().getUrlCode();
         }
 
-        if (code.isEmpty()){
-            code = generateCode();
+        if (codeInput.isEmpty()) {
+            codeInput = generateCode();
         }
 
-        Url url = Url.builder()
-                .originalUrl(originalUrl)
-                .urlCode(code)
-                .build();
+        Url url = Url.builder().originalUrl(originalUrl).urlCode(codeInput).build();
         urlRepository.save(url);
 
-        return baseUrl + code;
+        return baseUrl + codeInput;
     }
 
     public String getOriginalUrl(String shortUrl) {

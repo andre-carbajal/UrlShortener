@@ -32,7 +32,7 @@ public class UrlController {
     @PostMapping("/")
     @Transactional
     public String shortenUrl(@RequestParam("originalUrl") String originalUrl, @RequestParam("urlCode") String urlCode, @RequestParam("authInput") String authInput, Model model) {
-        String shortUrl = urlService.shortenUrl(originalUrl, urlCode);
+        String shortUrl = urlService.shortenUrl(originalUrl, urlCode, authInput);
 
         List<Url> urls = urlService.getAllUrls();
         model.addAttribute("shortUrl", shortUrl);
