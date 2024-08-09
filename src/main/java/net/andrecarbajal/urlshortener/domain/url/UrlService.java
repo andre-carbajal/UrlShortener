@@ -2,8 +2,9 @@ package net.andrecarbajal.urlshortener.domain.url;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import net.andrecarbajal.urlshortener.infra.ValidationException;
+import net.andrecarbajal.urlshortener.infra.UrlException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.net.MalformedURLException;
@@ -29,11 +30,11 @@ public class UrlService {
 
     public String shortenUrl(String originalUrl, String codeInput, String authInput) {
         if (!auth.equals(authInput)) {
-            throw new ValidationException("Invalid auth code");
+            throw new UrlException.ValidationException("Invalid auth code");
         }
 
-        if (!isValidUrl(originalUrl)) {
-            throw new ValidationException("Invalid URL format");
+        if (isNotValidUrl(originalUrl)) {
+            throw new UrlException.ValidationException("Invalid URL format");
         }
 
         List<Url> existingUrls = urlRepository.findByOriginalUrl(originalUrl);
@@ -60,12 +61,46 @@ public class UrlService {
         return urlRepository.findAll().reversed();
     }
 
-    private boolean isValidUrl(String url) {
+    public ResponseEntity<Void> deleteUrl(Long id) {
+        Url url = urlRepository.findById(id).orElse(null);
+
+        if (url == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        urlRepository.delete(url);
+        return ResponseEntity.ok().build();
+    }
+
+    public ResponseEntity<Void> updateUrlCode(Long id, UrlRecord data) {
+        Url url = urlRepository.findById(id).orElse(null);
+
+        if (url == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        if (isNotValidUrl(data.originalUrl())) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        if (!data.originalUrl().isEmpty()) {
+            url.setOriginalUrl(data.originalUrl());
+        }
+
+        if (!data.urlCode().isEmpty()) {
+            url.setUrlCode(data.urlCode());
+        }
+
+        urlRepository.save(url);
+        return ResponseEntity.ok().build();
+    }
+
+    private boolean isNotValidUrl(String url) {
         String URL_REGEX = "^(https?|ftp)://([a-zA-Z0-9.-]+)(:[0-9]+)?(/.*)?$";
         Pattern URL_PATTERN = Pattern.compile(URL_REGEX);
 
         if (!URL_PATTERN.matcher(url).matches()) {
-            return false;
+            return true;
         }
 
         try {
@@ -74,13 +109,13 @@ public class UrlService {
             String host = urlObj.getHost();
 
             if (protocol == null || host == null || host.isEmpty()) {
-                return false;
+                return true;
             }
 
             String[] hostParts = host.split("\\.");
-            return hostParts.length >= 2 && !hostParts[0].isEmpty() && !hostParts[hostParts.length - 1].isEmpty();
+            return hostParts.length < 2 || hostParts[0].isEmpty() || hostParts[hostParts.length - 1].isEmpty();
         } catch (MalformedURLException | URISyntaxException e) {
-            return false;
+            return true;
         }
     }
 

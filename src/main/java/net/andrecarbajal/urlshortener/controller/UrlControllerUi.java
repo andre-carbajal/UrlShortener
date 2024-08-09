@@ -17,7 +17,7 @@ import java.util.List;
 
 @Controller
 @AllArgsConstructor
-public class UrlController {
+public class UrlControllerUi {
 
     private final UrlService urlService;
 
@@ -29,7 +29,7 @@ public class UrlController {
         return "index";
     }
 
-    @PostMapping("/")
+    @PostMapping("/ui/urls")
     @Transactional
     public String shortenUrl(@RequestParam("originalUrl") String originalUrl, @RequestParam("urlCode") String urlCode, @RequestParam("authInput") String authInput, Model model) {
         String shortUrl = urlService.shortenUrl(originalUrl, urlCode, authInput);
@@ -42,7 +42,7 @@ public class UrlController {
         return "index";
     }
 
-    @GetMapping("/{urlCode}")
+    @GetMapping("/ui/urls/{urlCode}")
     public void getOriginalUrl(@PathVariable String urlCode, HttpServletResponse response) throws IOException {
         String originalUrl = urlService.getOriginalUrl(urlCode);
         if (originalUrl != null) {

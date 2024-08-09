@@ -8,15 +8,15 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class ErrorHandling {
-    @ExceptionHandler(ValidationException.class)
+    @ExceptionHandler(UrlException.ValidationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handleInvalidUrlException(ValidationException e) {
+    public ResponseEntity<String> handleInvalidUrlException(UrlException.ValidationException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
-    @ExceptionHandler(AuthException.class)
+    @ExceptionHandler(UrlException.AuthException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public ResponseEntity<String> handleAuthException(AuthException e) {
+    public ResponseEntity<String> handleAuthException(UrlException.AuthException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 }
