@@ -5,6 +5,7 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import net.andrecarbajal.urlshortener.domain.url.Url;
 import net.andrecarbajal.urlshortener.domain.url.UrlService;
+import net.andrecarbajal.urlshortener.infra.UrlException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,10 +33,14 @@ public class UrlControllerUi {
     @PostMapping("/ui/urls")
     @Transactional
     public String shortenUrl(@RequestParam("originalUrl") String originalUrl, @RequestParam("urlCode") String urlCode, @RequestParam("authInput") String authInput, Model model) {
-        String shortUrl = urlService.shortenUrl(originalUrl, urlCode, authInput);
+        try {
+            String shortUrl = urlService.shortenUrl(originalUrl, urlCode, authInput);
+            model.addAttribute("shortUrl", shortUrl);
+        } catch (UrlException.AuthException | UrlException.ValidationException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+        }
 
         List<Url> urls = urlService.getAllUrls();
-        model.addAttribute("shortUrl", shortUrl);
         model.addAttribute("urls", urls);
         model.addAttribute("baseUrl", urlService.getBaseUrl());
 

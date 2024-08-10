@@ -30,7 +30,7 @@ public class UrlService {
 
     public String shortenUrl(String originalUrl, String codeInput, String authInput) {
         if (!auth.equals(authInput)) {
-            throw new UrlException.ValidationException("Invalid auth code");
+            throw new UrlException.AuthException("Invalid auth code");
         }
 
         if (isNotValidUrl(originalUrl)) {
