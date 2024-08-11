@@ -26,10 +26,10 @@ public class UrlService {
     private String baseUrl;
 
     @Value("${app.auth}")
-    private String auth;
+    private String authCode;
 
     public String shortenUrl(String originalUrl, String codeInput, String authInput) {
-        if (!auth.equals(authInput)) {
+        if (!authCode.equals(authInput)) {
             throw new UrlException.AuthException("Invalid auth code");
         }
 
@@ -61,7 +61,11 @@ public class UrlService {
         return urlRepository.findAll().reversed();
     }
 
-    public ResponseEntity<Void> deleteUrl(Long id) {
+    public ResponseEntity<Void> deleteUrl(String authInput, Long id) {
+        if (!authCode.equals(authInput)) {
+            throw new UrlException.AuthException("Invalid auth code");
+        }
+
         Url url = urlRepository.findById(id).orElse(null);
 
         if (url == null) {
@@ -69,10 +73,14 @@ public class UrlService {
         }
 
         urlRepository.delete(url);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
-    public ResponseEntity<Void> updateUrlCode(Long id, UrlRecord data) {
+    public ResponseEntity<Void> updateUrlCode(String authInput, Long id, UrlRecord data) {
+        if (!authCode.equals(authInput)) {
+            throw new UrlException.AuthException("Invalid auth code");
+        }
+
         Url url = urlRepository.findById(id).orElse(null);
 
         if (url == null) {

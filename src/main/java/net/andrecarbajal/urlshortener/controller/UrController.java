@@ -24,13 +24,13 @@ public class UrController {
 
     @PutMapping("/api/urls/{id}")
     @Transactional
-    public ResponseEntity<Void> updateUrl(@PathVariable Long id, @RequestBody UrlRecord data) {
-        return urlService.updateUrlCode(id, data);
+    public ResponseEntity<Void> updateUrl(@RequestHeader("Authorization") String auth, @PathVariable Long id, @RequestBody UrlRecord data) {
+        return urlService.updateUrlCode(auth, id, data);
     }
 
     @DeleteMapping("/api/urls/{id}")
     @Transactional
-    public ResponseEntity<Void> deleteUrl(@PathVariable Long id) {
-        return urlService.deleteUrl(id);
+    public ResponseEntity<Void> deleteUrl(@RequestHeader("Authorization") String auth, @PathVariable Long id) {
+        return urlService.deleteUrl(auth, id);
     }
 }
