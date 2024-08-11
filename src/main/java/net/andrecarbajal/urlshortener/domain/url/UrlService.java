@@ -87,15 +87,15 @@ public class UrlService {
             return ResponseEntity.notFound().build();
         }
 
-        if (isNotValidUrl(data.originalUrl())) {
+        if (data.originalUrl() != null && !data.originalUrl().isEmpty() && isNotValidUrl(data.originalUrl())) {
             return ResponseEntity.badRequest().build();
         }
 
-        if (!data.originalUrl().isEmpty()) {
+        if (data.originalUrl() != null && !data.originalUrl().isEmpty()) {
             url.setOriginalUrl(data.originalUrl());
         }
 
-        if (!data.urlCode().isEmpty()) {
+        if (data.urlCode() != null && !data.urlCode().isEmpty()) {
             url.setUrlCode(data.urlCode());
         }
 
