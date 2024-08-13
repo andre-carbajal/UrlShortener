@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.util.List;
@@ -32,22 +33,18 @@ public class UrlControllerUi {
 
     @PostMapping("/ui/urls")
     @Transactional
-    public String shortenUrl(@RequestParam("originalUrl") String originalUrl, @RequestParam("urlCode") String urlCode, @RequestParam("authInput") String authInput, Model model) {
+    public String shortenUrl(@RequestParam("originalUrl") String originalUrl, @RequestParam("urlCode") String urlCode, @RequestParam("authInput") String authInput, RedirectAttributes redirectAttributes) {
         try {
             String shortUrl = urlService.shortenUrl(originalUrl, urlCode, authInput);
-            model.addAttribute("shortUrl", shortUrl);
+            redirectAttributes.addFlashAttribute("shortUrl", shortUrl);
         } catch (UrlException.AuthException | UrlException.ValidationException e) {
-            model.addAttribute("errorMessage", e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }
 
-        List<Url> urls = urlService.getAllUrls();
-        model.addAttribute("urls", urls);
-        model.addAttribute("baseUrl", urlService.getBaseUrl());
-
-        return "index";
+        return "redirect:/";
     }
 
-    @GetMapping("/ui/urls/{urlCode}")
+    @GetMapping("/{urlCode}")
     public void getOriginalUrl(@PathVariable String urlCode, HttpServletResponse response) throws IOException {
         String originalUrl = urlService.getOriginalUrl(urlCode);
         if (originalUrl != null) {

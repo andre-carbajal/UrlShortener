@@ -26,7 +26,7 @@
         <h2 class="text-2xl font-semibold mb-4">URLs</h2>
         <ul>
             <li th:each="url : ${urls}" class="px-4 py-2 cursor-pointer"
-                th:text="${baseUrl} + '/ui/urls/' + ${url.urlCode}"
+                th:text="${baseUrl} + '/' + ${url.urlCode}"
                 onclick="redirectToUrl(this)"></li>
         </ul>
     </div>
