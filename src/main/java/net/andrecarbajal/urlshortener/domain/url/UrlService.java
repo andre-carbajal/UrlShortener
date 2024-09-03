@@ -68,12 +68,12 @@ public class UrlService {
         return urlRepository.findAll().reversed();
     }
 
-    public ResponseEntity<Void> deleteUrl(String authInput, Long id) {
+    public ResponseEntity<Void> deleteUrl(String authInput, String urlCode) {
         if (!authCode.equals(authInput)) {
             throw new UrlException.AuthException("Invalid auth code");
         }
 
-        Url url = urlRepository.findById(id).orElse(null);
+        Url url = urlRepository.findByUrlCode(urlCode).orElse(null);
 
         if (url == null) {
             return ResponseEntity.notFound().build();

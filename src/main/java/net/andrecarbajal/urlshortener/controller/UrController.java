@@ -28,9 +28,9 @@ public class UrController {
         return urlService.updateUrlCode(auth, urlCode, data);
     }
 
-    @DeleteMapping("/api/urls/{id}")
+    @DeleteMapping("/api/urls/{urlCode}")
     @Transactional
-    public ResponseEntity<Void> deleteUrl(@RequestHeader("Authorization") String auth, @PathVariable Long id) {
-        return urlService.deleteUrl(auth, id);
+    public ResponseEntity<Void> deleteUrl(@RequestHeader("Authorization") String auth, @PathVariable String urlCode) {
+        return urlService.deleteUrl(auth, urlCode);
     }
 }
