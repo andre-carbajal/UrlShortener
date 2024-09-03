@@ -1,4 +1,6 @@
 package net.andrecarbajal.urlshortener.domain.url;
 
-public record UrlRecord(String originalUrl, String urlCode) {
+import jakarta.validation.constraints.NotNull;
+
+public record UrlRecord(@NotNull String originalUr) {
 }

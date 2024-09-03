@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity(name = "Url")
 @Table(name = "url")
 @AllArgsConstructor
@@ -22,4 +24,16 @@ public class Url {
 
     @JoinColumn(name = "url_code")
     private String urlCode;
+
+    @JoinColumn(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @JoinColumn(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    private Long visits;
+
+    public void incrementVisits() {
+        this.visits++;
+    }
 }

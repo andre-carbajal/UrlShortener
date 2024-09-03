@@ -12,6 +12,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -54,7 +55,13 @@ public class UrlService {
 
     public String getOriginalUrl(String shortUrl) {
         Optional<Url> url = urlRepository.findByUrlCode(shortUrl);
-        return url.map(Url::getOriginalUrl).orElse(null);
+        if (url.isPresent()) {
+            Url foundUrl = url.get();
+            foundUrl.incrementVisits();
+            urlRepository.save(foundUrl);
+            return foundUrl.getOriginalUrl();
+        }
+        return null;
     }
 
     public List<Url> getAllUrls() {
@@ -76,28 +83,20 @@ public class UrlService {
         return ResponseEntity.noContent().build();
     }
 
-    public ResponseEntity<Void> updateUrlCode(String authInput, Long id, UrlRecord data) {
+    public ResponseEntity<Void> updateUrlCode(String authInput, String url_code, UrlRecord data) {
         if (!authCode.equals(authInput)) {
             throw new UrlException.AuthException("Invalid auth code");
         }
 
-        Url url = urlRepository.findById(id).orElse(null);
+        Url url = urlRepository.findByUrlCode(url_code).orElse(null);
 
         if (url == null) {
             return ResponseEntity.notFound().build();
         }
 
-        if (data.originalUrl() != null && !data.originalUrl().isEmpty() && isNotValidUrl(data.originalUrl())) {
-            return ResponseEntity.badRequest().build();
-        }
+        url.setOriginalUrl(data.originalUr());
 
-        if (data.originalUrl() != null && !data.originalUrl().isEmpty()) {
-            url.setOriginalUrl(data.originalUrl());
-        }
-
-        if (data.urlCode() != null && !data.urlCode().isEmpty()) {
-            url.setUrlCode(data.urlCode());
-        }
+        url.setUpdatedAt(LocalDateTime.now());
 
         urlRepository.save(url);
         return ResponseEntity.ok().build();

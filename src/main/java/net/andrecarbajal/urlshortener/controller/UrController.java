@@ -22,10 +22,10 @@ public class UrController {
         return ResponseEntity.ok(urlService.getAllUrls());
     }
 
-    @PutMapping("/api/urls/{id}")
+    @PutMapping("/api/urls/{urlCode}")
     @Transactional
-    public ResponseEntity<Void> updateUrl(@RequestHeader("Authorization") String auth, @PathVariable Long id, @RequestBody UrlRecord data) {
-        return urlService.updateUrlCode(auth, id, data);
+    public ResponseEntity<Void> updateUrl(@RequestHeader("Authorization") String auth, @PathVariable String urlCode, @RequestBody UrlRecord data) {
+        return urlService.updateUrlCode(auth, urlCode, data);
     }
 
     @DeleteMapping("/api/urls/{id}")
