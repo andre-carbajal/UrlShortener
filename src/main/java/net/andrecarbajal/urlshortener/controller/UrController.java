@@ -22,6 +22,11 @@ public class UrController {
         return ResponseEntity.ok(urlService.getAllUrls());
     }
 
+    @GetMapping("/api/urls/{urlCode}/stats")
+    public ResponseEntity<Url> getUrlStats(@PathVariable String urlCode) {
+        return ResponseEntity.ok(urlService.getUrlStats(urlCode));
+    }
+
     @PutMapping("/api/urls/{urlCode}")
     @Transactional
     public ResponseEntity<Void> updateUrl(@RequestHeader("Authorization") String auth, @PathVariable String urlCode, @RequestBody UrlRecord data) {

@@ -64,6 +64,10 @@ public class UrlService {
         return null;
     }
 
+    public Url getUrlStats(String urlCode) {
+        return urlRepository.findByUrlCode(urlCode).orElse(null);
+    }
+
     public List<Url> getAllUrls() {
         return urlRepository.findAll().reversed();
     }
